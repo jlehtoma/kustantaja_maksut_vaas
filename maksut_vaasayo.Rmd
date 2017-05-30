@@ -12,10 +12,11 @@ library(tidyverse)
 # Vaasan yliopiston kokotekstiaineistomaksut 2010-2015
 
 **Joona Lehtomäki (2017-05-30)**  
+**Lisenssi: [CC0](https://creativecommons.org/publicdomain/zero/1.0/)**  
 
-Tiedot perustuvat Avoin tiede ja tutkimus (ATT) -hankkeen sekä suomalaisten avoimen tieteen aktiivien vuonna 2016 [keräämään ja julkaisemaan](http://avointiede.fi/kustantajahintatietoja) tietoaineistoon. Suora linkki koko tietoaineistoon CSV-tiedostona [tässä](http://avaa.tdata.fi/documents/kuhiti/Kustantajahintatiedot_Koko_Aineisto.csv). Tämä dokumentit tuottamiseen käytetty koodi [täällä]().
+Tiedot perustuvat Avoin tiede ja tutkimus (ATT) -hankkeen sekä suomalaisten avoimen tieteen aktiivien vuonna 2016 [keräämään ja julkaisemaan](http://avointiede.fi/kustantajahintatietoja) tietoaineistoon. Suora linkki koko tietoaineistoon CSV-tiedostona [tässä](http://avaa.tdata.fi/documents/kuhiti/Kustantajahintatiedot_Koko_Aineisto.csv). Tämä dokumentit tuottamiseen käytetty koodi [täällä](https://github.com/jlehtoma/kustantaja_maksut_vaasa).
 
-```{r, data-vaasa, message=FALSE}
+```{r, data-vaasa, message=FALSE, echo=FALSE}
 # Get data
 all_data <- readr::read_csv("http://avaa.tdata.fi/documents/kuhiti/Kustantajahintatiedot_Koko_Aineisto.csv")
 ```
