@@ -23,18 +23,29 @@ Tiedot perustuvat Avoin tiede ja tutkimus (ATT) -hankkeen sekä suomalaisten avo
 all_data <- readr::read_csv("http://avaa.tdata.fi/documents/kuhiti/Kustantajahintatiedot_Koko_Aineisto.csv")
 ```
 
+Useieden kustantajien tapauksessa kokotekstiaineistot on niputettu yhteen muiden palveluiden (esim. viitetietokannat, e-kirjat) kanssa ja siten pelkkien artikkelimaksujen erottelu ei onnistu suoraan. Alla olevissa luvuissa on huomioitu kaikki tietueet, joiden `Aineistotyyppi`-sarakkeessa on teksti `Kokotekstiaineisto`.
+
 ```{r subset-vaasa, echo=FALSE}
 # Subset:
 # 1. Vaasa university
 # 2. Full-text subscriptions
 # 3. Group by year
 vaasa_data <- all_data %>% 
-  dplyr::filter(`Organisaation nimi` == "Vaasan yliopisto" & Aineistotyyppi == "Kokotekstiaineisto") %>% 
+  dplyr::filter(`Organisaation nimi` == "Vaasan yliopisto" & grepl("Kokotekstiaineisto", Aineistotyyppi)) %>% 
   dplyr::group_by(Vuosi) %>% 
   summarise(
     Summa = sum(Hinta)
   )
+# Per publisher
+vaasa_data_pub <- all_data %>% 
+  dplyr::filter(`Organisaation nimi` == "Vaasan yliopisto" & grepl("Kokotekstiaineisto", Aineistotyyppi)) %>% 
+  dplyr::group_by(`Kustantaja/Välittäjä`) %>% 
+  summarise(
+    Summa = sum(Hinta)
+  )
 ```
+
+### Summa per vuosi
 
 ```{r, table-vaasa, echo=FALSE}
 
@@ -45,6 +56,8 @@ DT::datatable(vaasa_data, rownames = FALSE) %>%
 
 Yhteensä vuosina 2010-2015 Vaasan yliopisto käytti **`r sum(vaasa_data$Summa)` €** kokotekstiaineistomaksuihin.
 
+Maksujen määrä on kasvussa välillä 2010-2015:
+
 ```{r, plot-vaasa, echo=FALSE}
 
 ggplot2::ggplot(vaasa_data, aes(x = Vuosi, y = Summa)) + 
@@ -54,3 +67,13 @@ ggplot2::ggplot(vaasa_data, aes(x = Vuosi, y = Summa)) +
   theme_ipsum_rc()
 ```
 
+### Summa per kustantaja 2010-2015
+
+```{r, table-2-vaasa, echo=FALSE}
+
+DT::datatable(dplyr::arrange(vaasa_data_pub, desc(Summa)), rownames = FALSE) %>% 
+  DT::formatCurrency("Summa", currency = "€", before = FALSE, digits = 0, mark = " ")
+
+```
+
+Kaikista yllä mainituista maksuista n. 35% meni yhdelle kustantajalle: Elsevierille.
