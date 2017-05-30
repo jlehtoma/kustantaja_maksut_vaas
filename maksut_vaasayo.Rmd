@@ -1,4 +1,51 @@
-```{r setup}
+---
+output: 
+  html_document: 
+    theme: flatly
+---
+```{r setup, message=FALSE, echo=FALSE}
+library(DT)
+library(hrbrthemes)
+library(tidyverse)
+```
 
+# Vaasan yliopiston kokotekstiaineistomaksut 2010-2015
+
+**Joona Lehtomäki (2017-05-30)**  
+
+Tiedot perustuvat Avoin tiede ja tutkimus (ATT) -hankkeen sekä suomalaisten avoimen tieteen aktiivien vuonna 2016 [keräämään ja julkaisemaan](http://avointiede.fi/kustantajahintatietoja) tietoaineistoon. Suora linkki koko tietoaineistoon CSV-tiedostona [tässä](http://avaa.tdata.fi/documents/kuhiti/Kustantajahintatiedot_Koko_Aineisto.csv). Tämä dokumentit tuottamiseen käytetty koodi [täällä]().
+
+```{r, data-vaasa, message=FALSE}
+# Get data
+all_data <- readr::read_csv("http://avaa.tdata.fi/documents/kuhiti/Kustantajahintatiedot_Koko_Aineisto.csv")
+```
+
+```{r subset-vaasa, echo=FALSE}
+# Subset:
+# 1. Vaasa university
+# 2. Full-text subscriptions
+# 3. Group by year
+vaasa_data <- all_data %>% 
+  dplyr::filter(`Organisaation nimi` == "Vaasan yliopisto" & Aineistotyyppi == "Kokotekstiaineisto") %>% 
+  dplyr::group_by(Vuosi) %>% 
+  summarise(
+    Summa = sum(Hinta)
+  )
+```
+
+```{r, table-vaasa, echo=FALSE}
+
+DT::datatable(vaasa_data, rownames = FALSE) %>% 
+  DT::formatCurrency("Summa", currency = "€")
+
+```
+
+```{r, plot-vaasa, echo=FALSE}
+
+ggplot2::ggplot(vaasa_data, aes(x = Vuosi, y = Summa)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Vaasan yliopiston kokotekstiaineistomaksut 2010-2015") + 
+  ylab("Summa (€)\n") + xlab("\nVuosi") +
+  theme_ipsum_rc()
 ```
 
