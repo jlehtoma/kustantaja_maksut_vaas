@@ -39,7 +39,7 @@ vaasa_data <- all_data %>%
 ```{r, table-vaasa, echo=FALSE}
 
 DT::datatable(vaasa_data, rownames = FALSE) %>% 
-  DT::formatCurrency("Summa", currency = "€")
+  DT::formatCurrency("Summa", currency = "€", before = FALSE)
 
 ```
 
